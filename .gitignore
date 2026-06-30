@@ -10,6 +10,3 @@ cmake-build-test/*
 cmake-build-verify
 cmake-build-verify/
 cmake-build-verify/*
-vendor
-vendor/
-vendor/*
