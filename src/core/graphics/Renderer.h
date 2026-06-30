@@ -3,7 +3,7 @@
 #include <memory>
 #include "core/CoreAPI.h"
 #include "core/Camera.h"
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 

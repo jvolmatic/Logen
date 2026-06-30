@@ -1,7 +1,7 @@
 ﻿#include "Renderer.h"
 #include <iostream>
 #include "core/Camera.h"
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 LogenCore::Graphics::Renderer::~Renderer() {
@@ -40,7 +40,7 @@ bool LogenCore::Graphics::Renderer::Initialize(const char *windowTitle, int widt
     }
 
     glfwMakeContextCurrent(this->window.get());
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+    if (gladLoadGL(reinterpret_cast<GLADloadfunc>(glfwGetProcAddress)) == 0) {
         std::cout << "Failed to initialize GLAD" << std::endl;
 
         glfwDestroyWindow(this->window.get());
@@ -69,7 +69,6 @@ void LogenCore::Graphics::Renderer::RenderFrame() {
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-    glfwSwapBuffers(window.get());
+    glfwSwapBuffers(this->window.get());
     glfwPollEvents();
 }

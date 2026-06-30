@@ -40,9 +40,10 @@ target_link_libraries(LogenCore
         assimp
 )
 
-# Copy assimp DLL to output directory
+# Copy the built Assimp runtime library next to the engine output when Assimp
+# is built as a shared library.
 add_custom_command(TARGET LogenCore POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${ASSIMP_ROOT_DIR}/bin/Release/assimp-vc145-mt.dll"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assimp-vc145-mt.dll"
+        "$<TARGET_FILE:assimp>"
+        "$<TARGET_FILE_DIR:LogenCore>"
 )
