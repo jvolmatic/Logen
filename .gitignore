@@ -1,13 +1,2 @@
-bin
-bin/*
-bin/
-cmake-build-debug-mingw/*
-cmake-build-debug-mingw
-cmake-build-debug-mingw/
-cmake-build-test
-cmake-build-test/
-cmake-build-test/*
-cmake-build-verify
-cmake-build-verify/
-cmake-build-verify/*
-/cmake-build-assimp-check/
+/bin/
+/cmake-build-*/
