@@ -10,7 +10,17 @@ file(GLOB_RECURSE LOGEN_CORE_SOURCES
 
 add_library(LogenCore SHARED ${LOGEN_CORE_SOURCES}
         Camera.cpp
-        Camera.h)
+        Camera.h
+        Scene.cpp
+        Scene.h
+        SceneObject.cpp
+        SceneObject.h
+        graphics/stb_image.cpp
+        Vector3.h
+        Light.cpp
+        Light.h
+        MeshResource.cpp
+        MeshResource.h)
 
 # Set the output name to "logen" (produces logen.dll on Windows)
 set_target_properties(LogenCore PROPERTIES

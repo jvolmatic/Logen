@@ -1,0 +1,14 @@
+﻿#SCENE test
+// Camera
+// posX, posY, posZ, rotX, rotY, rotZ
+#CAMERA 0.0 0.0 5.0 0.0 0.0 0.0
+
+//#POINT_LIGHT 0.0 10.0 0.0 0.0 0.0 0.0
+
+// Directional light
+// posX, posY, posZ, dirX, dirY, dirZ, directionX, directionY, directionZ
+#DIRECTIONAL_LIGHT 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -1.0 0.0
+
+// Resource mesh
+// mesh path, shader path, posX, posY, posZ, rotX, rotY, rotZ
+#RESOURCE_MESH resources/models/car/car.obj resources/shaders/lit.glsl 0.0 0.0 0.0 0.0 0.0 0.0

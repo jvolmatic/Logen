@@ -5,6 +5,7 @@
 #include "core/Camera.h"
 #include <glad/gl.h>
 #include <glm/glm.hpp>
+#include <utility>
 #include <GLFW/glfw3.h>
 
 namespace LogenCore::Graphics {

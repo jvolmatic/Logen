@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 namespace LogenCore {
-    Engine& Engine::GetInstance() {
+    Engine &Engine::GetInstance() {
         static Engine instance;
         return instance;
     }
@@ -49,6 +49,13 @@ namespace LogenCore {
 
         return this->renderer->IsAlive();
     }
+
+    void Engine::SwapScene(Scene &otherScene) {
+        this->scene = &otherScene;
+        this->scene->isRoot = true;
+    }
+
+    Scene *Engine::GetTree() {
+        return this->scene;
+    }
 }
-
-
