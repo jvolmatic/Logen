@@ -4,8 +4,8 @@
 #include <memory>
 #include "engine/CoreAPI.h"
 #include "graphics/Renderer.h"
-
 #include "Scene.h"
+#include "Vector2.h"
 #include "io/Input.h"
 
 namespace LogenCore {
@@ -17,23 +17,32 @@ namespace LogenCore {
         Engine(Engine &&) = delete;
         Engine &operator=(Engine &&) = delete;
 
+    public:
         static LOGEN_API Engine &GetInstance();
-
         LOGEN_API bool Initialize(int width, int height, const char *title);
         LOGEN_API void Update();
         LOGEN_API void Shutdown();
         LOGEN_API [[nodiscard]] bool IsRunning() const;
         LOGEN_API void SwapScene(Scene &scene);
         LOGEN_API Scene *GetTree();
-        std::shared_ptr<Camera>& GetActiveCamera() { return this->renderer->GetActiveCamera(); }
+        LOGEN_API Vector2 GetWindowSize();
+        LOGEN_API std::shared_ptr<Graphics::Renderer> Renderer = nullptr;
+        LOGEN_API std::shared_ptr<IO::Input> Input = nullptr;
+
+    public:
+        std::shared_ptr<Camera> &GetActiveCamera() { return this->Renderer->GetActiveCamera(); }
 
     private:
         Engine() = default;
         ~Engine() = default;
 
+    public:
+        float deltaTime = 0.0f; // Time between current frame and last frame
+
     private:
-        std::shared_ptr<LogenCore::Graphics::Renderer> renderer = nullptr;
-        std::shared_ptr<LogenCore::IO::Input> input = nullptr;
+        float lastFrame = 0.0f; // Time of last frame
+
+    private:
         bool initialized = false;
         LogenCore::Scene *scene = nullptr;
     };

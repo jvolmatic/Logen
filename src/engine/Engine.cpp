@@ -13,28 +13,27 @@ namespace LogenCore {
             return true;
         }
 
-        renderer = std::make_shared<LogenCore::Graphics::Renderer>();
-        if (!renderer->Initialize(title, width, height)) {
+        Renderer = std::make_shared<LogenCore::Graphics::Renderer>();
+        if (!Renderer->Initialize(title, width, height)) {
             std::cerr << "[Engine] Failed to initialize the renderer." << std::endl;
             return false;
         }
 
-        input = std::make_shared<LogenCore::IO::Input>(this->renderer->GetWindow());
+        Input = std::make_shared<LogenCore::IO::Input>(this->Renderer->GetWindow());
 
         initialized = true;
         return true;
     }
 
-    float deltaTime = 0.0f;	// Time between current frame and last frame
-    float lastFrame = 0.0f; // Time of last frame
     void Engine::Update() {
-        if (!initialized || renderer == nullptr) {
+        if (!initialized || Renderer == nullptr) {
             return;
         }
 
-        this->input->ProcessInput(deltaTime);
-        this->renderer->RenderFrame();
+        this->Input->Update();
+        this->Renderer->RenderFrame();
 
+        // Update delta time
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -45,7 +44,7 @@ namespace LogenCore {
             return;
         }
 
-        renderer = nullptr;
+        Renderer = nullptr;
         initialized = false;
     }
 
@@ -54,7 +53,7 @@ namespace LogenCore {
             return false;
         }
 
-        return this->renderer->IsAlive();
+        return this->Renderer->IsAlive();
     }
 
     void Engine::SwapScene(Scene &otherScene) {
@@ -64,5 +63,15 @@ namespace LogenCore {
 
     Scene *Engine::GetTree() {
         return this->scene;
+    }
+
+    Vector2 Engine::GetWindowSize() {
+        int width, height;
+        if (this->Renderer == nullptr) {
+            return {0, 0};
+        }
+
+        glfwGetWindowSize(this->Renderer->GetWindow().get(), &width, &height);
+        return {static_cast<float>(width), static_cast<float>(height)};
     }
 }

@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 
+#include "EditorInput.h"
 #include "engine/Engine.h"
 #include "engine/Scene.h"
 
@@ -20,9 +21,18 @@ int main() {
     // Set scene as the root scene
     engine.SwapScene(root);
 
+    EditorInput input;
+
     // Main loop
+    float deltaTime = 0.0f; // Time between current frame and last frame
+    float lastFrame = 0.0f; // Time of last frame
     while (engine.IsRunning()) {
+        input.ProcessInput(deltaTime);
         engine.Update();
+
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
     }
 
     engine.Shutdown();

@@ -1,4 +1,6 @@
-﻿add_executable(LogenRuntime "editor.cpp")
+﻿add_executable(LogenRuntime "editor.cpp"
+		EditorInput.cpp
+		EditorInput.h)
 set_target_properties(LogenRuntime PROPERTIES OUTPUT_NAME "game")
 
 add_custom_command(TARGET LogenRuntime POST_BUILD

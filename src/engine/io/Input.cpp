@@ -1,81 +1,85 @@
 ﻿#include "Input.h"
+
+#include <iostream>
+
 #include "Engine.h"
 
-LogenCore::IO::Input *LogenCore::IO::Input::Instance = nullptr;
-
-LogenCore::IO::Input::Input(std::shared_ptr<GLFWwindow> &window) {
-    Instance = this;
-    this->window = window;
-
-    int screenWidth, screenHeight;
-    glfwGetWindowSize(this->window.get(), &screenWidth, &screenHeight);
-    this->lastX = screenWidth / 2.0f;
-    this->lastY = screenHeight / 2.0f;
-
-    glfwSetCursorPosCallback(this->window.get(), this->OnMouseCallback);
-    glfwSetScrollCallback(this->window.get(), this->OnScrollCallback);
-}
-
-void LogenCore::IO::Input::ProcessInput(float deltaTime) {
-    if (glfwGetKey(window.get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window.get(), true);
-
-    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
-    if (glfwGetKey(window.get(), GLFW_KEY_W) == GLFW_PRESS)
-        Engine::GetInstance().GetActiveCamera()->SetPosition(
-            Engine::GetInstance().GetActiveCamera()->GetPosition() + cameraSpeed * Engine::GetInstance().GetActiveCamera()->GetFront());
-    if (glfwGetKey(window.get(), GLFW_KEY_S) == GLFW_PRESS)
-        Engine::GetInstance().GetActiveCamera()->SetPosition(
-            Engine::GetInstance().GetActiveCamera()->GetPosition() - cameraSpeed * Engine::GetInstance().GetActiveCamera()->GetFront());
-    if (glfwGetKey(window.get(), GLFW_KEY_A) == GLFW_PRESS)
-        Engine::GetInstance().GetActiveCamera()->SetPosition(
-            Engine::GetInstance().GetActiveCamera()->GetPosition() - glm::normalize(
-                glm::cross(Engine::GetInstance().GetActiveCamera()->GetFront(), Engine::GetInstance().GetActiveCamera()->GetUp())) *
-            cameraSpeed);
-    if (glfwGetKey(window.get(), GLFW_KEY_D) == GLFW_PRESS)
-        Engine::GetInstance().GetActiveCamera()->SetPosition(
-            Engine::GetInstance().GetActiveCamera()->GetPosition() + glm::normalize(
-                glm::cross(Engine::GetInstance().GetActiveCamera()->GetFront(), Engine::GetInstance().GetActiveCamera()->GetUp())) *
-            cameraSpeed);
+LogenCore::IO::Input::Input(std::shared_ptr<GLFWwindow> window) {
+    this->glWindow = std::move(window);
+    glfwSetCursorPosCallback(this->glWindow.get(), this->OnMouseCallback);
+    glfwSetScrollCallback(this->glWindow.get(), this->OnScrollCallback);
 }
 
 void LogenCore::IO::Input::OnMouseCallback(GLFWwindow *window, double xposIn, double yposIn) {
-    if (Instance == nullptr)
+    auto &input = Engine::GetInstance().Input;
+    if (input == nullptr)
         return;
 
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+    auto xpos = static_cast<float>(xposIn);
+    auto ypos = static_cast<float>(yposIn);
 
-    if (Instance->isFirstMouseMovement) {
-        Instance->lastX = xpos;
-        Instance->lastY = ypos;
-        Instance->isFirstMouseMovement = false;
+    if (input->bIsFirstMouseMovement) {
+        input->LastMouseX = xpos;
+        input->LastMouseY = ypos;
+        input->bIsFirstMouseMovement = false;
+        input->MouseDelta = {0.0f, 0.0f};
+        return;
     }
 
-    float xoffset = xpos - Instance->lastX;
-    float yoffset = Instance->lastY - ypos; // reversed since y-coordinates range from bottom to top
-    Instance->lastX = xpos;
-    Instance->lastY = ypos;
+    auto xoffset = xpos - input->LastMouseX;
+    auto yoffset = input->LastMouseY - ypos; // reversed since y-coordinates range from bottom to top
 
-    const float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    Engine::GetInstance().GetActiveCamera()->SetYaw(Engine::GetInstance().GetActiveCamera()->GetYaw() + xoffset);
-    Engine::GetInstance().GetActiveCamera()->SetPitch(Engine::GetInstance().GetActiveCamera()->GetPitch() + yoffset);
-
-    if (Engine::GetInstance().GetActiveCamera()->GetPitch() > 89.0f)
-        Engine::GetInstance().GetActiveCamera()->SetPitch(89.0f);
-    if (Engine::GetInstance().GetActiveCamera()->GetPitch() < -89.0f)
-        Engine::GetInstance().GetActiveCamera()->SetPitch(-89.0f);
-
-    Engine::GetInstance().GetActiveCamera()->UpdateCamera();
+    input->LastMouseX = xpos;
+    input->LastMouseY = ypos;
+    input->MouseDelta = {xoffset, yoffset};
 }
 
 void LogenCore::IO::Input::OnScrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-    Engine::GetInstance().GetActiveCamera()->SetFOV(ceil(Engine::GetInstance().GetActiveCamera()->GetFOV() - yoffset));
-    if (Engine::GetInstance().GetActiveCamera()->GetFOV() < 1)
-        Engine::GetInstance().GetActiveCamera()->SetFOV(1);
-    if (Engine::GetInstance().GetActiveCamera()->GetFOV() > 45)
-        Engine::GetInstance().GetActiveCamera()->SetFOV(45);
+    auto &input = Engine::GetInstance().Input;
+    if (input == nullptr)
+        return;
+
+    input->ScrollDelta = static_cast<float>(yoffset);
+    input->scrolledLastFrame = true;
+}
+
+void LogenCore::IO::Input::Update() {
+    MouseDelta = {0.0f, 0.0f};
+    keysPressedLastUpdate.clear();
+    for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+        if (glfwGetKey(glWindow.get(), key) == GLFW_PRESS) {
+            keysPressedLastUpdate.push_back(key);
+        }
+    }
+
+    if (scrolledLastFrame) {
+        ScrollDelta = 0.0f;
+    }
+    scrolledLastFrame = false;
+}
+
+bool LogenCore::IO::Input::IsKeyPressed(int key) {
+    return glfwGetKey(glWindow.get(), key) == GLFW_PRESS;
+}
+
+bool LogenCore::IO::Input::IsMouseButtonPressed(int button) {
+    return glfwGetMouseButton(glWindow.get(), button) == GLFW_PRESS;
+}
+
+std::pair<float, float> LogenCore::IO::Input::GetMousePosition() {
+    double xpos, ypos;
+    glfwGetCursorPos(glWindow.get(), &xpos, &ypos);
+    return {static_cast<float>(xpos), static_cast<float>(ypos)};
+}
+
+bool LogenCore::IO::Input::IsKeyJustPressed(int key) {
+    return std::find(keysPressedLastUpdate.begin(), keysPressedLastUpdate.end(), key) != keysPressedLastUpdate.end();
+}
+
+bool LogenCore::IO::Input::IsKeyJustReleased(int key) {
+    return std::find(keysPressedLastUpdate.begin(), keysPressedLastUpdate.end(), key) == keysPressedLastUpdate.end();
+}
+
+void LogenCore::IO::Input::SetMouseCaptured(bool captured) {
+    glfwSetInputMode(glWindow.get(), GLFW_CURSOR, captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }

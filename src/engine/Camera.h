@@ -1,12 +1,13 @@
 ﻿#ifndef LOGEN_CAMERA_H
 #define LOGEN_CAMERA_H
+#include "CoreAPI.h"
 #include "glm/fwd.hpp"
 #include "glm/vec3.hpp"
 
 namespace LogenCore {
     class Camera {
     public:
-        void UpdateCamera();
+        LOGEN_API void UpdateCamera();
 
         void SetPosition(glm::vec3 pos) { this->position = pos; }
         glm::vec3 GetPosition() { return this->position; };
