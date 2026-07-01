@@ -10,6 +10,7 @@
 
 namespace LogenCore {
     enum LightType {
+        UNKNOWN = -1,
         DIRECTIONAL = 0,
         POINT = 1,
         SPOT = 2
@@ -17,10 +18,7 @@ namespace LogenCore {
 
     class Light : public SceneObject {
     public:
-        explicit Light(Vector3 worldPos = {}, Vector3 worldRot = {}, LightType type = POINT, Vector3 dir = {})
-            : SceneObject(worldPos, worldRot, SceneObjectType::Light), type(type), direction(dir) {
-        }
-
+        explicit Light(Vector3 worldPos = {}, Vector3 worldRot = {}) : SceneObject(worldPos, worldRot, SceneObjectType::Light) {}
         ~Light() override = default;
 
     public:
@@ -40,8 +38,7 @@ namespace LogenCore {
         }
 
     public:
-        LightType type = POINT;
-        Vector3 direction;
+        LightType type = UNKNOWN;
     };
 }
 

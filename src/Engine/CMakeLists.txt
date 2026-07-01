@@ -17,10 +17,11 @@ add_library(LogenCore SHARED ${LOGEN_CORE_SOURCES}
         SceneObject.h
         Graphics/stb_image.cpp
         Types/Vector3.h
-        Light.cpp
         Light.h
         MeshResource.cpp
-        MeshResource.h)
+        MeshResource.h
+        PointLight.h
+        DirectionalLight.h)
 
 # Set the output name to "logen" (produces logen.dll on Windows)
 set_target_properties(LogenCore PROPERTIES

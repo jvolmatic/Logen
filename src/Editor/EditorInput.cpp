@@ -67,5 +67,4 @@ void EditorInput::ProcessInput(float deltaTime) {
         movementSpeed = std::clamp(movementSpeed / sprintSpeedMultiplier, 0.0f, 100.0f);
     }
     bWasSprintKeyPressedLastFrame = sprintPressed;
-    std::cout << "Speed: " << movementSpeed << std::endl;
 }

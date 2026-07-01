@@ -24,7 +24,7 @@ void main()
 
 #type fragment
 #version 330 core
-#define NR_POINT_LIGHTS 1
+#define NR_POINT_LIGHTS 32
 
 struct Material {
     sampler2D diffuse;
@@ -43,6 +43,7 @@ uniform DirLight dirLight;
 struct PointLight {
     vec3 position;
     float constant;
+    float intensity;
     float linear;
     float quadratic;
     vec3 ambient;
@@ -50,6 +51,7 @@ struct PointLight {
     vec3 specular;
 };
 uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform int numPointLights;
 
 struct SpotLight {
     vec3 position;
@@ -90,15 +92,14 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
 
     // phase 2: Point lights
-    //        for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-    //            result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-    //        }
+    for (int i = 0; i < int(numPointLights); i++) {
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+    }
 
     // phase 3: Spot light
     //        result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
-    //    FragColor = texture(material.diffuse, TexCoords);
 }
 
 // calculates the color when using a directional light.
@@ -128,7 +129,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // attenuation
     float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = light.intensity / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     // combine results
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));

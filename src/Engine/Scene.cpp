@@ -8,8 +8,10 @@
 #include <cctype>
 #include <unordered_set>
 
+#include "DirectionalLight.h"
 #include "Light.h"
 #include "MeshResource.h"
+#include "PointLight.h"
 
 namespace {
     std::string StripUtf8Bom(const std::string &value) {
@@ -63,7 +65,6 @@ namespace {
             stream >> position.x >> position.y >> position.z >> rotation.x >> rotation.y >> rotation.z
         );
     }
-
 }
 
 bool LogenCore::Scene::Instantiate() {
@@ -136,11 +137,26 @@ bool LogenCore::Scene::Instantiate() {
             if (!ParseTransform(lineStream, position, rotation))
                 return false;
 
-            // Optional direction for directional/spot lights; point lights can omit it.
-            Vector3 direction;
-            lineStream >> direction.x >> direction.y >> direction.z;
+            switch (lightType.value()) {
+                case LightType::DIRECTIONAL: {
+                    Vector3 direction;
+                    lineStream >> direction.x >> direction.y >> direction.z;
+                    objects.push_back(std::unique_ptr<SceneObject>(std::make_unique<DirectionalLight>(position, rotation, direction)));
+                    break;
+                }
+                case LightType::POINT: {
+                    Vector3 rgb;
+                    lineStream >> rgb.x >> rgb.y >> rgb.z;
+                    float intensity;
+                    lineStream >> intensity;
 
-            objects.push_back(std::make_unique<Light>(position, rotation, *lightType, direction));
+                    objects.push_back(std::unique_ptr<SceneObject>(std::make_unique<PointLight>(position, rotation, rgb, intensity)));
+                    break;
+                }
+                default:
+                    break;
+            }
+
             continue;
         }
 

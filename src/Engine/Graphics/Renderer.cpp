@@ -4,7 +4,9 @@
 
 #include "Engine.h"
 #include "Light.h"
+#include "DirectionalLight.h"
 #include "MeshResource.h"
+#include "PointLight.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -100,6 +102,7 @@ void LogenCore::Graphics::Renderer::RenderFrame() {
         shader->SetMat4("view", view);
         shader->SetVec3("viewPos", this->activeCamera->GetPosition());
 
+        int pointLightCount = 0;
         for (std::unique_ptr<SceneObject> &scene_object: Engine::GetInstance().GetTree()->objects) {
             // Handle lights
             if (scene_object->objectType == SceneObjectType::Light) {
@@ -108,16 +111,35 @@ void LogenCore::Graphics::Renderer::RenderFrame() {
                     continue;
 
                 switch (light->type) {
-                    case LightType::DIRECTIONAL:
-                        shader->SetVec3("dirLight.direction", light->direction.x, light->direction.y, light->direction.z);
-                        shader->SetVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-                        shader->SetVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-                        shader->SetVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+                    case LightType::DIRECTIONAL: {
+                        auto *dirLight = dynamic_cast<DirectionalLight *>(light);
+                        if (dirLight != nullptr) {
+                            shader->SetVec3("dirLight.direction", dirLight->direction.x, dirLight->direction.y, dirLight->direction.z);
+                            shader->SetVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+                            shader->SetVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+                            shader->SetVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+                        }
                         break;
+                    }
                     case LightType::SPOT:
-                    case LightType::POINT:
                         //TODO
                         break;
+                    case LightType::POINT: {
+                        auto *pointLight = dynamic_cast<PointLight *>(light);
+                        if (pointLight != nullptr) {
+                            std::string baseKey = "pointLights[" + std::to_string(pointLightCount) + "]";
+                            shader->SetVec3(baseKey + ".position", pointLight->worldPosition.toGLM());
+                            shader->SetVec3(baseKey + ".ambient", 0.05f, 0.05f, 0.05f);
+                            shader->SetVec3(baseKey + ".diffuse", pointLight->RGB.toGLM());
+                            shader->SetVec3(baseKey + ".specular", 1.0f, 1.0f, 1.0f);
+                            shader->SetFloat(baseKey + ".intensity", pointLight->Intensity);
+                            shader->SetFloat(baseKey + ".constant", 1.0f);
+                            shader->SetFloat(baseKey + ".linear", 0.09f);
+                            shader->SetFloat(baseKey + ".quadratic", 0.032f);
+                            pointLightCount++;
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -132,6 +154,9 @@ void LogenCore::Graphics::Renderer::RenderFrame() {
             shader->SetMat4("model", model);
             meshRes->model->Draw(*shader);
         }
+
+        // Tell shader how many point lights are active
+        shader->SetInt("numPointLights", static_cast<int>(pointLightCount));
     }
 
     glfwSwapBuffers(this->window.get());
