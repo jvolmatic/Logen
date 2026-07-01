@@ -1,7 +1,5 @@
 #include "Engine.h"
 #include <iostream>
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
 
 namespace LogenCore {
     Engine &Engine::GetInstance() {
@@ -21,16 +19,25 @@ namespace LogenCore {
             return false;
         }
 
+        input = std::make_shared<LogenCore::IO::Input>(this->renderer->GetWindow());
+
         initialized = true;
         return true;
     }
 
+    float deltaTime = 0.0f;	// Time between current frame and last frame
+    float lastFrame = 0.0f; // Time of last frame
     void Engine::Update() {
         if (!initialized || renderer == nullptr) {
             return;
         }
 
+        this->input->ProcessInput(deltaTime);
         this->renderer->RenderFrame();
+
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
     }
 
     void Engine::Shutdown() {

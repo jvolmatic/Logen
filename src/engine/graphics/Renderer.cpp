@@ -1,8 +1,6 @@
 ﻿#include "Renderer.h"
 #include <iostream>
-#include "core/Camera.h"
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
+#include "engine/Camera.h"
 
 #include "Engine.h"
 #include "Light.h"

@@ -2,11 +2,11 @@
 #define LOGEN_ENGINE_H
 
 #include <memory>
-#include "core/CoreAPI.h"
+#include "engine/CoreAPI.h"
 #include "graphics/Renderer.h"
-#include <GLFW/glfw3.h>
 
 #include "Scene.h"
+#include "io/Input.h"
 
 namespace LogenCore {
     class Engine {
@@ -25,6 +25,7 @@ namespace LogenCore {
         LOGEN_API [[nodiscard]] bool IsRunning() const;
         LOGEN_API void SwapScene(Scene &scene);
         LOGEN_API Scene *GetTree();
+        std::shared_ptr<Camera>& GetActiveCamera() { return this->renderer->GetActiveCamera(); }
 
     private:
         Engine() = default;
@@ -32,6 +33,7 @@ namespace LogenCore {
 
     private:
         std::shared_ptr<LogenCore::Graphics::Renderer> renderer = nullptr;
+        std::shared_ptr<LogenCore::IO::Input> input = nullptr;
         bool initialized = false;
         LogenCore::Scene *scene = nullptr;
     };

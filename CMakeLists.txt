@@ -40,5 +40,5 @@ set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
 add_subdirectory("vendor/assimp" "${CMAKE_CURRENT_BINARY_DIR}/assimp" EXCLUDE_FROM_ALL)
 
-add_subdirectory("src/core")
-add_subdirectory("src/runtime")
+add_subdirectory("src/engine")
+add_subdirectory("src/editor")
