@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 
 #include "EditorInput.h"
-#include "engine/Engine.h"
-#include "engine/Scene.h"
+#include "Engine/Engine.h"
+#include "Engine/Scene.h"
 
 int main() {
     LogenCore::Engine &engine = LogenCore::Engine::GetInstance();

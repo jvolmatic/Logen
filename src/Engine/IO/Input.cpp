@@ -45,21 +45,27 @@ void LogenCore::IO::Input::OnScrollCallback(GLFWwindow *window, double xoffset, 
 
 void LogenCore::IO::Input::Update() {
     MouseDelta = {0.0f, 0.0f};
-    keysPressedLastUpdate.clear();
-    for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
-        if (glfwGetKey(glWindow.get(), key) == GLFW_PRESS) {
-            keysPressedLastUpdate.push_back(key);
-        }
-    }
 
     if (scrolledLastFrame) {
         ScrollDelta = 0.0f;
     }
     scrolledLastFrame = false;
+
+    // update pressed keys
+    for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
+        if (glfwGetKey(glWindow.get(), key) == GLFW_PRESS) {
+            keysPressed.push_back(key);
+        }
+    }
+    for (const int &key: keysPressed) {
+        if (glfwGetKey(glWindow.get(), key) != GLFW_PRESS) {
+            std::erase(keysPressed, key);
+        }
+    }
 }
 
 bool LogenCore::IO::Input::IsKeyPressed(int key) {
-    return glfwGetKey(glWindow.get(), key) == GLFW_PRESS;
+    return std::find(keysPressed.begin(), keysPressed.end(), key) != keysPressed.end();
 }
 
 bool LogenCore::IO::Input::IsMouseButtonPressed(int button) {
@@ -73,11 +79,11 @@ std::pair<float, float> LogenCore::IO::Input::GetMousePosition() {
 }
 
 bool LogenCore::IO::Input::IsKeyJustPressed(int key) {
-    return std::find(keysPressedLastUpdate.begin(), keysPressedLastUpdate.end(), key) != keysPressedLastUpdate.end();
+    return glfwGetKey(glWindow.get(), key) == GLFW_PRESS;
 }
 
 bool LogenCore::IO::Input::IsKeyJustReleased(int key) {
-    return std::find(keysPressedLastUpdate.begin(), keysPressedLastUpdate.end(), key) == keysPressedLastUpdate.end();
+    return glfwGetKey(glWindow.get(), key) == GLFW_RELEASE;
 }
 
 void LogenCore::IO::Input::SetMouseCaptured(bool captured) {

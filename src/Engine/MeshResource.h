@@ -1,7 +1,7 @@
 ﻿#ifndef LOGEN_MESHRESOURCE_H
 #define LOGEN_MESHRESOURCE_H
 #include "SceneObject.h"
-#include "graphics/Model.h"
+#include "Graphics/Model.h"
 
 namespace LogenCore {
     class MeshResource : public SceneObject {

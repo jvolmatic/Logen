@@ -5,13 +5,15 @@
 
 class EditorInput {
 public:
-    EditorInput();
+    EditorInput()= default;
     ~EditorInput() = default;
     void ProcessInput(float deltaTime);
 
 private:
     bool isFirstMouseMovement = true;
+    bool bWasSprintKeyPressedLastFrame = false;
     float movementSpeed = 2.5f;
+    float sprintSpeedMultiplier = 5.0f;
 };
 
 

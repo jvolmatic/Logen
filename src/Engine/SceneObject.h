@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
-#include "Vector3.h"
-#include "graphics/Shader.h"
+#include "Types/Vector3.h"
+#include "Graphics/Shader.h"
 
 namespace LogenCore {
     enum class SceneObjectType {

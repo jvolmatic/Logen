@@ -2,11 +2,11 @@
 #define LOGEN_ENGINE_H
 
 #include <memory>
-#include "engine/CoreAPI.h"
-#include "graphics/Renderer.h"
+#include "Engine/CoreAPI.h"
+#include "Graphics/Renderer.h"
 #include "Scene.h"
-#include "Vector2.h"
-#include "io/Input.h"
+#include "Types/Vector2.h"
+#include "IO/Input.h"
 
 namespace LogenCore {
     class Engine {
@@ -26,8 +26,8 @@ namespace LogenCore {
         LOGEN_API void SwapScene(Scene &scene);
         LOGEN_API Scene *GetTree();
         LOGEN_API Vector2 GetWindowSize();
-        LOGEN_API std::shared_ptr<Graphics::Renderer> Renderer = nullptr;
-        LOGEN_API std::shared_ptr<IO::Input> Input = nullptr;
+        std::shared_ptr<Graphics::Renderer> Renderer = nullptr;
+        std::shared_ptr<IO::Input> Input = nullptr;
 
     public:
         std::shared_ptr<Camera> &GetActiveCamera() { return this->Renderer->GetActiveCamera(); }

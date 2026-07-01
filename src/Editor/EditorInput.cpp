@@ -3,10 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "engine/Engine.h"
-
-EditorInput::EditorInput() {
-}
+#include "Engine/Engine.h"
 
 void EditorInput::ProcessInput(float deltaTime) {
     if (LogenCore::Engine::GetInstance().GetActiveCamera() == nullptr)
@@ -55,12 +52,20 @@ void EditorInput::ProcessInput(float deltaTime) {
 
         // Speed change
         if (LogenCore::Engine::GetInstance().Input->ScrollDelta != 0) {
-            movementSpeed += LogenCore::Engine::GetInstance().Input->ScrollDelta * 0.1f;
+            movementSpeed -= LogenCore::Engine::GetInstance().Input->ScrollDelta * 0.1f;
             movementSpeed = std::clamp(movementSpeed, 0.0f, 100.0f);
-
-            std::cout << "Speed: " << movementSpeed << std::endl;
         }
     } else {
         LogenCore::Engine::GetInstance().Input->SetMouseCaptured(false);
     }
+
+    // Sprint
+    const bool sprintPressed = LogenCore::Engine::GetInstance().Input->IsKeyPressed(GLFW_KEY_LEFT_SHIFT);
+    if (sprintPressed && !bWasSprintKeyPressedLastFrame) {
+        movementSpeed = std::clamp(movementSpeed * sprintSpeedMultiplier, 0.0f, 100.0f);
+    } else if (!sprintPressed && bWasSprintKeyPressedLastFrame) {
+        movementSpeed = std::clamp(movementSpeed / sprintSpeedMultiplier, 0.0f, 100.0f);
+    }
+    bWasSprintKeyPressedLastFrame = sprintPressed;
+    std::cout << "Speed: " << movementSpeed << std::endl;
 }

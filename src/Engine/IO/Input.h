@@ -4,9 +4,8 @@
 #include <utility>
 #include <vector>
 #include <glad/gl.h>
-
-#include "engine/Vector2.h"
-#include "engine/CoreAPI.h"
+#include "../Types/Vector2.h"
+#include "Engine/CoreAPI.h"
 #include "GLFW/glfw3.h"
 
 namespace LogenCore::IO {
@@ -39,7 +38,7 @@ namespace LogenCore::IO {
 
     private:
         std::shared_ptr<GLFWwindow> glWindow;
-        std::vector<int> keysPressedLastUpdate;
+        std::vector<int> keysPressed;
     };
 }
 

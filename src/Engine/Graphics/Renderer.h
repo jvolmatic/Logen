@@ -3,8 +3,8 @@
 #include <memory>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include "engine/CoreAPI.h"
-#include "engine/Camera.h"
+#include "Engine/CoreAPI.h"
+#include "Engine/Camera.h"
 #include <glm/glm.hpp>
 #include <utility>
 

@@ -6,7 +6,7 @@
 #include <string>
 
 #include "SceneObject.h"
-#include "Vector3.h"
+#include "Types/Vector3.h"
 
 namespace LogenCore {
     enum LightType {

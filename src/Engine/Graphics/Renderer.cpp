@@ -1,6 +1,6 @@
 ﻿#include "Renderer.h"
 #include <iostream>
-#include "engine/Camera.h"
+#include "Engine/Camera.h"
 
 #include "Engine.h"
 #include "Light.h"

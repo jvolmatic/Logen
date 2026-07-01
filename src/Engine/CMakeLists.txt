@@ -2,10 +2,10 @@
 file(GLOB_RECURSE LOGEN_CORE_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/graphics/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/graphics/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/io/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/io/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Graphics/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Graphics/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/IO/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/IO/*.h"
 )
 
 add_library(LogenCore SHARED ${LOGEN_CORE_SOURCES}
@@ -15,8 +15,8 @@ add_library(LogenCore SHARED ${LOGEN_CORE_SOURCES}
         Scene.h
         SceneObject.cpp
         SceneObject.h
-        graphics/stb_image.cpp
-        Vector3.h
+        Graphics/stb_image.cpp
+        Types/Vector3.h
         Light.cpp
         Light.h
         MeshResource.cpp

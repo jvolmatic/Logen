@@ -1,6 +1,6 @@
 ﻿#ifndef LOGEN_VECTOR3_H
 #define LOGEN_VECTOR3_H
-#include "CoreAPI.h"
+#include "../CoreAPI.h"
 #include <glm/glm.hpp>
 
 namespace LogenCore {
